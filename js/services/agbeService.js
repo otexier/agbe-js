@@ -1,4 +1,4 @@
-agbeServices.factory('agbeService', ['$location', '$log', 'dataService', 'agbeAdapter', function ($location, log, dataService, agbeAdapter) {
+agbeServices.factory('agbeService', ['$location', '$log', 'dataService', 'agbeAdapter','soundService', function ($location, log, dataService, agbeAdapter,soundService) {
 
     var agbeService = {
 
@@ -13,6 +13,21 @@ agbeServices.factory('agbeService', ['$location', '$log', 'dataService', 'agbeAd
         init: function () {
             log.log("agbeService.init()");
             dataService.worldData = agbeAdapter.createStartWorld();
+            agbeService.forAllCharacters(function (character) {
+                soundService.preloadSound('story/',character.attackSoundPath);
+            })
+        },
+
+        forAllCharacters:function(callback) {
+            if (typeof callback == 'function') {
+                for (var id in dataService.worldData.characterDictionnary) {
+                    var character = dataService.worldData.characterDictionnary[id];
+                    callback(character);
+                }
+            }
+            else {
+                alert("given parameter "+callback+" is not a function");
+            }
         },
 
         go: function (newLocation,amountMinutes) {
